@@ -72,8 +72,10 @@
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 <script>
 
+    let tbody = $("tbody");
+
     function addRow() {
-        $("tbody").append(`
+        tbody.append(`
             <tr>
                 <td class="width-50">
                     <button class="btn btn-outline-danger del-btn">
@@ -84,10 +86,10 @@
                     <input type="text" class="text-capitalize form-control product-name">
                 </td>
                 <td class="width-150">
-                    <input type="number" class="text-right form-control product-cost" value="0" min="0">
+                    <input type="number" class="text-right form-control cost" value="0" min="0">
                 </td>
                 <td class="width-150">
-                    <input type="number" class="text-right form-control product-quantity" value="0" min="0">
+                    <input type="number" class="text-right form-control quantity" value="0" min="0">
                 </td>
                 <td class="text-right">
                     <h4 class="mb-0 price" id="price">0</h4>
@@ -105,17 +107,23 @@
 
     // row ဖျက်ရန်
 
-    // browser loading ဆွဲတဲ့ အခါမှာ row က တစ် row ဘဲ ပါလာတဲ့ အတွက် ဒီနည်းသုံးမရ
+    // browser loading ဆွဲတဲ့ အခါမှာ row က တစ်row ဘဲ ပါလာတဲ့ အတွက် row တိုင်းကိုဖျက်နိုင်ရန် ဒီနည်းသုံးမရ
     // $(".del-btn").on("click", function () {
     //     alert('hello');
     // })
 
     // အသစ်ထပ်ထည့်တဲ့ row တိုင်းကို မိ ရန် event delegation ကိုသုံးရ
-    $("tbody").delegate(".del-btn", "click", function () {
+    tbody.delegate(".del-btn", "click", function () {
         // del-btn က child ဖြစ်နေပြီး ပျက်စေချင်တဲ့ row က parent ဖြစ်နေတော့ ဒီတိုင်းဘဲ ဖျက်မရ
         // parent().parent() or parentsUntil() သုံးမှ ဖျက်ရ
 
         $(this).parentsUntil("tbody").remove();
+    });
+
+    tbody.delegate("input", "keyup change", function () {
+        let cost = $(this).parentsUntil("tbody").find(".cost").val();
+        let quantity = $(this).parentsUntil("tbody").find(".quantity").val();
+        $(this).parentsUntil("tbody").find(".price").html(cost*quantity);
     })
 
 </script>
