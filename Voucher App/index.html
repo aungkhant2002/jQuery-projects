@@ -101,6 +101,10 @@
     // loading ဆွဲပြီးပြီးချင်း row တစ်ခု ပေါ်ချင်လို့ ခေါ်ထားတာဖြစ်တယ်။
     addRow();
 
+    function total() {
+        $("#total").html($(".price").toArray().map(el => el.innerHTML).reduce((x, y) => Number(x) + Number(y)));
+    }
+
     $(".add-row-btn").on("click", function () {
         addRow();
     });
@@ -114,16 +118,24 @@
 
     // အသစ်ထပ်ထည့်တဲ့ row တိုင်းကို မိ ရန် event delegation ကိုသုံးရ
     tbody.delegate(".del-btn", "click", function () {
+
+        // နောက်ဆုံးတစ်row ဖျက်တဲ့ အချိန်မှာ row တစ်ခု ပြန်ထားပေးတာဖြစ်တယ်။
+        if ($("tbody tr").toArray().length === 1) {
+            addRow();
+        }
+
         // del-btn က child ဖြစ်နေပြီး ပျက်စေချင်တဲ့ row က parent ဖြစ်နေတော့ ဒီတိုင်းဘဲ ဖျက်မရ
         // parent().parent() or parentsUntil() သုံးမှ ဖျက်ရ
-
         $(this).parentsUntil("tbody").remove();
+        total();
     });
 
+    // calculate price
     tbody.delegate("input", "keyup change", function () {
         let cost = $(this).parentsUntil("tbody").find(".cost").val();
         let quantity = $(this).parentsUntil("tbody").find(".quantity").val();
-        $(this).parentsUntil("tbody").find(".price").html(cost*quantity);
+        $(this).parentsUntil("tbody").find(".price").html(cost * quantity);
+        total();
     })
 
 </script>
