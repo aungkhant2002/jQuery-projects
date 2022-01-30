@@ -11,12 +11,112 @@
 </head>
 <style>
 
+    .width-50 {
+        width: 50px;
+    }
+
+    .width-150 {
+        width: 150px;
+    }
+
+    .width-300 {
+        width: 300px;
+    }
+
+    td {
+        vertical-align: middle !important;
+    }
+
 </style>
 <body>
 
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="my-5">
+                <h3 class="text-primary">Voucher App (Apply jQuery)</h3>
+                <p class="text-black-50 mb-5">Bootstrap & jQuery</p>
+            </div>
+            <div class="d-flex justify-content-between mb-3">
+                <h4 class="mb-0">Product List</h4>
+                <button class="btn btn-primary add-row-btn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Product Name</th>
+                    <th class="text-right">Cost</th>
+                    <th class="text-right">Quantity</th>
+                    <th class="text-right">Price</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="4" class="text-center">Total</td>
+                    <td class="text-right">
+                        <h4 class="mb-0 font-weight-bold" id="total">0</h4>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 <script>
+
+    function addRow() {
+        $("tbody").append(`
+            <tr>
+                <td class="width-50">
+                    <button class="btn btn-outline-danger del-btn">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </td>
+                <td class="width-300">
+                    <input type="text" class="text-capitalize form-control product-name">
+                </td>
+                <td class="width-150">
+                    <input type="number" class="text-right form-control product-cost" value="0" min="0">
+                </td>
+                <td class="width-150">
+                    <input type="number" class="text-right form-control product-quantity" value="0" min="0">
+                </td>
+                <td class="text-right">
+                    <h4 class="mb-0 price" id="price">0</h4>
+                </td>
+            </tr>
+        `);
+    }
+
+    // loading ဆွဲပြီးပြီးချင်း row တစ်ခု ပေါ်ချင်လို့ ခေါ်ထားတာဖြစ်တယ်။
+    addRow();
+
+    $(".add-row-btn").on("click", function () {
+        addRow();
+    });
+
+    // row ဖျက်ရန်
+
+    // browser loading ဆွဲတဲ့ အခါမှာ row က တစ် row ဘဲ ပါလာတဲ့ အတွက် ဒီနည်းသုံးမရ
+    // $(".del-btn").on("click", function () {
+    //     alert('hello');
+    // })
+
+    // အသစ်ထပ်ထည့်တဲ့ row တိုင်းကို မိ ရန် event delegation ကိုသုံးရ
+    $("tbody").delegate(".del-btn", "click", function () {
+        // del-btn က child ဖြစ်နေပြီး ပျက်စေချင်တဲ့ row က parent ဖြစ်နေတော့ ဒီတိုင်းဘဲ ဖျက်မရ
+        // parent().parent() or parentsUntil() သုံးမှ ဖျက်ရ
+
+        $(this).parentsUntil("tbody").remove();
+    })
 
 </script>
 </body>
