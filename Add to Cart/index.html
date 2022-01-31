@@ -74,6 +74,8 @@
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 <script>
 
+    let products = [];
+
     function toShort(str, max = 50) {
         if (str.length >= max) {
             return str.substring(0, max) + " ...";
@@ -81,8 +83,9 @@
         return str;
     }
 
-    $.get("https://fakestoreapi.com/products", function (data) {
-        data.map(product => {
+    function toShow(x) {
+        $("#products").empty(); // မထည့်ခင်မှာ အရင်ရှင်း
+        x.map(product => {
             $("#products").append(`
                 <div class="card product pt-4">
                     <img src="${product.image}" class="card-img-top" alt="">
@@ -99,6 +102,47 @@
                 </div>
             `);
         })
+    }
+
+    $.get("https://fakestoreapi.com/products", function (data) {    // fetch api
+        products = data;
+        toShow(products);
+    })
+
+    $("#search").on("keyup", function () {
+        let keyword = $(this).val().toLowerCase(); // search key
+
+        if (keyword.trim().length) {
+            let filterProducts = products.filter(product => {
+                if (product.title.toLowerCase().indexOf(keyword) > -1 || product.description.toLowerCase().indexOf(keyword) > -1 || product.price == keyword) {
+                    return product;
+                }
+            });
+            toShow(filterProducts);
+        }
+    })
+
+    $.get("https://fakestoreapi.com/products/categories", function (data) {
+        data.map(cat => {
+            $("#category").append(`
+                <option value="${cat}">${cat}</option>
+            `);
+        })
+    })
+
+    $("#category").on("change", function () {
+        let selectedCategory = $(this).val();
+        if (selectedCategory != 0) {
+            let filterProducts = products.filter(product => {
+                if (product.category === selectedCategory) {
+                    return product;
+                }
+            });
+            toShow(filterProducts);
+        } else {
+            toShow(products);
+        }
+
     })
 
 </script>
