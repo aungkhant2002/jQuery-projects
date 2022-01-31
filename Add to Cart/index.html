@@ -9,14 +9,97 @@
     <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./node_modules/@fortawesome/fontawesome-free/css/all.min.css">
 </head>
+<style>
+
+    .product {
+        border: none;
+    }
+
+    .product img {
+        height: 120px;
+        width: auto;
+        margin-bottom: -50px;
+        margin-left: 1rem;
+        transition: 0.5s;
+    }
+
+    .product .card-title {
+        margin-top: 50px;
+    }
+
+    .product:hover img {
+        transform: scale(1.05) rotate(-10deg);
+    }
+
+</style>
 <body>
 
-<div class="container"></div>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="">
+                <div class="row">
+
+                    <div class="col-9 border-right min-vh-100">
+                        <div class="d-flex justify-content-between align-items-end my-3">
+                            <div class="">
+                                <h4 class="text-primary mb-0">My Shop</h4>
+                                <small class="text-black-50">Bootstrap & jQuery</small>
+                            </div>
+                            <div class="">
+                                <div class="form-row">
+                                    <div class="mr-2">
+                                        <input type="text" id="search" class="form-control" placeholder="Search Items">
+                                    </div>
+                                    <div class="">
+                                        <select name="" id="category" class="custom-select">
+                                            <option value="0">All Categories</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="products" class="card-columns">
+
+                        </div>
+                    </div>
+
+                    <div class="col-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 <script>
 
+    function toShort(str, max = 50) {
+        if (str.length >= max) {
+            return str.substring(0, max) + " ...";
+        }
+        return str;
+    }
 
+    $.get("https://fakestoreapi.com/products", function (data) {
+        data.map(product => {
+            $("#products").append(`
+                <div class="card product pt-4">
+                    <img src="${product.image}" class="card-img-top" alt="">
+                    <div class="card-body border rounded">
+                        <p class="card-title font-weight-bold text-nowrap overflow-hidden text-primary">${product.title}</p>
+                        <small class="text-black-50">${toShort(product.description, 120)}</small>
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <span class="font-weight-bold">${product.price}</span>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-cart-plus mr-1"></i>Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `);
+        })
+    })
 
 </script>
 </body>
