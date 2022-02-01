@@ -11,6 +11,26 @@
 </head>
 <style>
 
+    /* width */
+    ::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
     .product {
         border: none;
     }
@@ -35,6 +55,10 @@
         height: 50px;
     }
 
+    .overflow-scroll {
+        overflow-y: scroll;
+    }
+
 </style>
 <body>
 
@@ -45,47 +69,51 @@
                 <div class="row">
 
                     <div class="col-8 border-right min-vh-100">
-                        <div class="d-flex justify-content-between align-items-end my-3">
-                            <div class="">
-                                <h4 class="text-primary mb-0">My Shop</h4>
-                                <small class="text-black-50">Bootstrap & jQuery</small>
-                            </div>
-                            <div class="">
-                                <div class="form-row">
-                                    <div class="mr-2">
-                                        <input type="text" id="search" class="form-control" placeholder="Search Items">
-                                    </div>
-                                    <div class="">
-                                        <select name="" id="category" class="custom-select">
-                                            <option value="0">All Categories</option>
-                                        </select>
+                        <div class="vh-100 overflow-scroll px-2">
+                            <div class="d-flex justify-content-between align-items-end my-3 position-sticky bg-white pb-2" style="top: 12px; z-index: 100;">
+                                <div class="">
+                                    <h4 class="text-primary mb-0">My Shop</h4>
+                                    <small class="text-black-50">Bootstrap & jQuery</small>
+                                </div>
+                                <div class="">
+                                    <div class="form-row">
+                                        <div class="mr-2">
+                                            <input type="text" id="search" class="form-control" placeholder="Search Items">
+                                        </div>
+                                        <div class="">
+                                            <select name="" id="category" class="custom-select">
+                                                <option value="0">All Categories</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div id="products" class="card-columns">
+                            <div id="products" class="card-columns">
 
+                            </div>
                         </div>
                     </div>
 
                     <div class="col-4">
-                        <div class="d-flex justify-content-between align-items-end my-3">
-                            <div class="">
-                                <h4 class="text-primary mb-0">My Cart</h4>
-                                <small class="text-black-50">Added items to cart</small>
+                        <div class="vh-100 overflow-scroll px-2">
+                            <div class="d-flex justify-content-between align-items-end my-3">
+                                <div class="">
+                                    <h4 class="text-primary mb-0">My Cart</h4>
+                                    <small class="text-black-50">Added items to cart</small>
+                                </div>
+                                <div class="">
+                                    <h4 class="">
+                                        <span class="total-item">0</span>
+                                        <i class="fas fa-shopping-cart text-primary"></i>
+                                    </h4>
+                                </div>
                             </div>
-                            <div class="">
-                                <h4 class="">
-                                    <span class="total-item">0</span>
-                                    <i class="fas fa-shopping-cart text-primary"></i>
-                                </h4>
+                            <div id="cart">
+
                             </div>
-                        </div>
-                        <div id="cart">
+                            <div class="total py-3 bg-white position-sticky" style="bottom: 0;">
 
-                        </div>
-                        <div class="total">
-
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -136,7 +164,7 @@
             $(".total").html(`
                  <div class="d-flex justify-content-between">
                     <h4>Total</h4>
-                    <h4 class="cart-total-cost">$ ${totalCost.toFixed(2)}</h4>
+                    <h4 class="cart-total-cost">$ ${Number(totalCost).toFixed(2)}</h4>
                 </div>
             `);
         } else {
@@ -198,13 +226,13 @@
             $("#cart").append(`
                 <div class="card item-in-cart border-0" data-id="${productInfo.id}">
                     <div class="card-body">
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between align-items-center">
                             <img src="${productInfo.image}" class="img-in-cart" alt="">
                             <button class="btn btn-outline-danger remove-from-cart">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
-                        <p class="font-weight-bold">${productInfo.title}</p>
+                        <p class="font-weight-bold mt-2">${productInfo.title}</p>
                         <div class="d-flex justify-content-between align-items-end">
                             <div class="form-row">
                                 <button class="btn btn-outline-primary quantity-minus">
