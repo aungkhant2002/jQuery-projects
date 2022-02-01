@@ -31,16 +31,20 @@
         transform: scale(1.05) rotate(-10deg);
     }
 
+    .img-in-cart {
+        height: 50px;
+    }
+
 </style>
 <body>
 
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-10">
+        <div class="col-11">
             <div class="">
                 <div class="row">
 
-                    <div class="col-9 border-right min-vh-100">
+                    <div class="col-8 border-right min-vh-100">
                         <div class="d-flex justify-content-between align-items-end my-3">
                             <div class="">
                                 <h4 class="text-primary mb-0">My Shop</h4>
@@ -64,29 +68,48 @@
                         </div>
                     </div>
 
-                    <div class="col-3"></div>
+                    <div class="col-4">
+                        <div class="d-flex justify-content-between align-items-end my-3">
+                            <div class="">
+                                <h4 class="text-primary mb-0">My Cart</h4>
+                                <small class="text-black-50">Added items to cart</small>
+                            </div>
+                            <div class="">
+                                <h4 class="">
+                                    <span class="total-item">0</span>
+                                    <i class="fas fa-shopping-cart text-primary"></i>
+                                </h4>
+                            </div>
+                        </div>
+                        <div id="cart">
+
+                        </div>
+                        <div class="total">
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="./node_modules/jquery/dist/jquery.min.js"></script>
-<script>
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
 
-    let products = [];
+        let products = [];
 
-    function toShort(str, max = 50) {
-        if (str.length >= max) {
-            return str.substring(0, max) + " ...";
+        function toShort(str, max = 50) {
+            if (str.length >= max) {
+                return str.substring(0, max) + " ...";
+            }
+            return str;
         }
-        return str;
-    }
 
-    function toShow(x) {
-        $("#products").empty(); // မထည့်ခင်မှာ အရင်ရှင်း
-        x.map(product => {
-            $("#products").append(`
+        function toShow(x) {
+            $("#products").empty(); // မထည့်ခင်မှာ အရင်ရှင်း
+            x.map(product => {
+                $("#products").append(`
                 <div class="card product pt-4">
                     <img src="${product.image}" class="card-img-top" alt="">
                     <div class="card-body border rounded">
@@ -94,57 +117,114 @@
                         <small class="text-black-50">${toShort(product.description, 120)}</small>
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <span class="font-weight-bold">${product.price}</span>
-                            <button class="btn btn-outline-primary btn-sm">
+                            <button class="btn btn-outline-primary btn-sm add-to-cart" data-id="${product.id}">
                                 <i class="fas fa-cart-plus mr-1"></i>Add
                             </button>
                         </div>
                     </div>
                 </div>
             `);
-        })
-    }
-
-    $.get("https://fakestoreapi.com/products", function (data) {    // fetch api
-        products = data;
-        toShow(products);
-    })
-
-    $("#search").on("keyup", function () {
-        let keyword = $(this).val().toLowerCase(); // search key
-
-        if (keyword.trim().length) {
-            let filterProducts = products.filter(product => {
-                if (product.title.toLowerCase().indexOf(keyword) > -1 || product.description.toLowerCase().indexOf(keyword) > -1 || product.price == keyword) {
-                    return product;
-                }
-            });
-            toShow(filterProducts);
+            })
         }
-    })
 
-    $.get("https://fakestoreapi.com/products/categories", function (data) {
-        data.map(cat => {
-            $("#category").append(`
+        function cartTotal() {
+            $(".total-item").html($(".item-in-cart-cost").length);
+            let totalCost = $(".item-in-cart-cost").toArray().map(el => el.innerHTML).reduce((x, y) => Number(x) + Number(y));
+            $(".total").html(`
+                 <div class="d-flex justify-content-between">
+                    <h4>Total</h4>
+                    <h4 class="cart-total-cost">$ ${totalCost}</h4>
+                </div>
+            `);
+        }
+
+        $.get("https://fakestoreapi.com/products", function (data) {    // fetch api
+            products = data;
+            toShow(products);
+        })
+
+        $("#search").on("keyup", function () {
+            let keyword = $(this).val().toLowerCase(); // search key
+
+            if (keyword.trim().length) {
+                let filterProducts = products.filter(product => {
+                    if (product.title.toLowerCase().indexOf(keyword) > -1 || product.description.toLowerCase().indexOf(keyword) > -1 || product.price == keyword) {
+                        return product;
+                    }
+                });
+                toShow(filterProducts);
+            }
+        })
+
+        $.get("https://fakestoreapi.com/products/categories", function (data) {
+            data.map(cat => {
+                $("#category").append(`
                 <option value="${cat}">${cat}</option>
             `);
+            })
         })
-    })
 
-    $("#category").on("change", function () {
-        let selectedCategory = $(this).val();
-        if (selectedCategory != 0) {
-            let filterProducts = products.filter(product => {
-                if (product.category === selectedCategory) {
-                    return product;
-                }
-            });
-            toShow(filterProducts);
-        } else {
-            toShow(products);
-        }
+        $("#category").on("change", function () {
+            let selectedCategory = $(this).val();
+            if (selectedCategory != 0) {
+                let filterProducts = products.filter(product => {
+                    if (product.category === selectedCategory) {
+                        return product;
+                    }
+                });
+                toShow(filterProducts);
+            } else {
+                toShow(products);
+            }
 
-    })
+        })
 
-</script>
+        // add-to-cart
+        $("#products").delegate(".add-to-cart", "click", function () {
+            let currentItemId = $(this).attr("data-id");
+            let productInfo = products.filter(el => el.id == currentItemId)[0];
+            if ($(".item-in-cart").toArray().map(el => el.getAttribute("data-id")).includes(currentItemId)) {
+                alert("Already added this item");
+            } else {
+                $("#cart").append(`
+                <div class="card item-in-cart border-0" data-id="${productInfo.id}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <img src="${productInfo.image}" class="img-in-cart" alt="">
+                            <button class="btn btn-outline-danger remove-from-cart">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <p class="font-weight-bold">${productInfo.title}</p>
+                        <div class="d-flex justify-content-between align-items-end">
+                            <div class="form-row">
+                                <button class="btn btn-outline-primary quantity-minus">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="number" class="form-control mx-2 w-25 text-right" unitPrice="${productInfo.price}" value="1" min="1">
+                                <button class="btn btn-outline-primary quantity-plus">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <p class="mb-0">
+                                $ <span class="item-in-cart-cost">${productInfo.price}</span>
+                            </p>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            `);
+            }
+            cartTotal();
+
+        });
+
+        // remove from cart
+        $("#cart").delegate(".remove-from-cart", "click", function () {
+            $(this).parentsUntil("#cart").remove();
+            cartTotal();
+        });
+
+    </script>
 </body>
 </html>
